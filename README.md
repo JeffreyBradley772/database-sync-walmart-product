@@ -24,7 +24,7 @@ This project is a NestJS-based service that integrates with the Walmart Affiliat
 ### Walmart API Setup
 
 1. **Register for a Walmart Developer Account**:
-   - Visit [Walmart Developer Portal](https://developer.walmart.com/)
+   - Visit [Walmart Developer Portal](https://walmart.io/)
    - Create an account and apply for API access
 
 2. **Generate API Keys**:
