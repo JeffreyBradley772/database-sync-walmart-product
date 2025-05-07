@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductModule } from './product/product.module';
 import { SearchModule } from './search/search.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { SyncModule } from './sync/sync.module';
 
 @Module({
   imports: [
@@ -11,8 +13,9 @@ import { SearchModule } from './search/search.module';
       isGlobal: true,
       envFilePath: '.env'
     }),
+    PrismaModule,
     ProductModule, 
-    SearchModule
+    SearchModule, SyncModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -6,6 +6,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { WalmartApiResponse, WalmartProduct, WalmartSearchOptions, parseWalmartProducts } from './types/walmart-api.types';
+import { Optional } from '@prisma/client/runtime/library';
 
 // Interface for the signature response
 export interface SignatureResponse {
@@ -20,8 +21,6 @@ export class SearchService {
 Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
      */
     private readonly walmartApiUrl = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
-    
-
 
     private readonly consumerId: string;
     
@@ -39,6 +38,9 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
         console.log('Consumer ID set to:', this.consumerId);
     }
 
+    /**
+     * Generate a signature for the Walmart API request
+     */
     private generateSignature(): SignatureResponse {
         try {
             const timestamp = new Date().getTime();
@@ -67,9 +69,12 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
         }
     }
 
-    async searchProduct(product: string): Promise<WalmartApiResponse> {
+    /**
+     * Search for products on Walmart
+     */
+    async searchWalmart(options:Partial<WalmartSearchOptions>): Promise<WalmartApiResponse> {
 
-        if (!product) {
+        if (!options.query) {
             throw new Error('Product query parameter is required');
         }
         
@@ -82,10 +87,14 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
             "WM_SEC.AUTH_SIGNATURE": signature
         };
 
-        const params: WalmartSearchOptions = {
-            query: product,
-            numItems: 25,
+        // Convert parameters to strings as the Walmart API expects string parameters
+        const params = {
+            query: options.query,
+            numItems: options.numItems,
+            start: options.start
         };
+        
+        console.log('SearchService.searchWalmart - Final params:', params);
 
         const observable = this.http.get<WalmartApiResponse>(this.walmartApiUrl, {
             headers: walmart_headers,
@@ -93,7 +102,7 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
         }).pipe(
             map((response) => response.data),
             catchError((error) => {
-                console.error('Error in searchProduct request:', error.response?.data || error.message);
+                console.error('Error in searchWalmart request:', error.response?.data || error.message);
                 console.error('Error status:', error.response?.status);
                 console.error('Error headers:', error.response?.headers);
                 console.error('Error config:', error.response?.config);
@@ -106,15 +115,32 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
     
     /**
      * Get just the products array from the Walmart API response
+     * @param product The product name or keyword to search for
+     * @param options Optional search parameters including pagination
+     * @returns Array of formatted product strings
      */
-    async getProducts(product: string): Promise<string[]> {
-        const response = await this.searchProduct(product);
+    async getProducts(options: Partial<WalmartSearchOptions>): Promise<string[]> {
+        
+        const response = await this.searchWalmart(options);
+        
         console.log("Total results: " + response.totalResults);
         const names: string[] = [];
         for (const product of response.items) {
             names.push(`${product.brandName} - ${product.salePrice}`);
         }
         return names;
+    }
+
+    /**
+     * Get just the products array from the Walmart API response
+     * @param product The product name or keyword to search for
+     * @param options Optional search parameters including pagination
+     * @returns Array of formatted product strings
+     */
+    async getWalmartPoducts(options: Partial<WalmartSearchOptions>) {
+        const response = await this.searchWalmart(options);
+        console.log("Total results: " + response.totalResults);
+        return response.items;
     }
 
 }
