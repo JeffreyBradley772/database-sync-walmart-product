@@ -2,6 +2,7 @@ import { Controller, Get, Post, Delete, Param, Query, Body, HttpCode, HttpStatus
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { WalmartProduct } from '../search/types/walmart-api.types';
+import { FlossProduct } from '@prisma/client';
 
 @ApiTags('products')
 @Controller('product')
@@ -11,7 +12,7 @@ export class ProductController {
     @Get()
     @ApiOperation({ summary: 'Get all products from the database' })
     @ApiResponse({ status: 200, description: 'Returns all products' })
-    async getAllProducts() {
+    async getAllProducts(): Promise<FlossProduct[]> {
         const products = await this.productService.getAllProducts();
         return products;
     }
@@ -20,7 +21,7 @@ export class ProductController {
     @ApiOperation({ summary: 'Search for products in the database' })
     @ApiQuery({ name: 'query', required: true, description: 'Search term' })
     @ApiResponse({ status: 200, description: 'Returns matching products' })
-    async getProductByQuery(@Query('query') query: string) {
+    async getProductByQuery(@Query('query') query: string): Promise<FlossProduct[]> {
         const products = await this.productService.searchDatabase(query);
         return products;
     }
@@ -30,7 +31,7 @@ export class ProductController {
     @ApiParam({ name: 'id', description: 'Product ID' })
     @ApiResponse({ status: 200, description: 'Returns the product' })
     @ApiResponse({ status: 404, description: 'Product not found' })
-    async getProductById(@Param('id') id: string) {
+    async getProductById(@Param('id') id: string): Promise<FlossProduct> {
         return this.productService.getProductById(id);
     }
 
@@ -38,7 +39,7 @@ export class ProductController {
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Save a product to the database' })
     @ApiResponse({ status: 201, description: 'Product saved successfully' })
-    async saveProduct(@Body() product: WalmartProduct) {
+    async saveProduct(@Body() product: WalmartProduct): Promise<FlossProduct> {
         return this.productService.saveProduct(product);
     }
 
@@ -46,7 +47,7 @@ export class ProductController {
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Save multiple products to the database' })
     @ApiResponse({ status: 201, description: 'Products saved successfully' })
-    async saveProducts(@Body() products: WalmartProduct[]) {
+    async saveProducts(@Body() products: WalmartProduct[]): Promise<FlossProduct[]> {
         return this.productService.saveProducts(products);
     }
 
@@ -55,7 +56,7 @@ export class ProductController {
     @ApiParam({ name: 'id', description: 'Product ID' })
     @ApiResponse({ status: 200, description: 'Product deleted successfully' })
     @ApiResponse({ status: 404, description: 'Product not found' })
-    async deleteProduct(@Param('id') id: string) {
+    async deleteProduct(@Param('id') id: string): Promise<FlossProduct> {
         return this.productService.deleteProduct(id);
     }
 }

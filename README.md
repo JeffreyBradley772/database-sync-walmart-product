@@ -12,13 +12,14 @@ This project is a NestJS-based service that integrates with the Walmart Affiliat
 - **Error Handling**: Proper HTTP status codes and error responses
 - **Database Integration**: Store search results using Prisma ORM
 - **Modular Architecture**: Separation of concerns with dedicated modules for search and product management
+- **Sync Module**: Simplifies syncing of products from Walmart API to the database
 
 ## Setup and Configuration
 
 ### Prerequisites
 
-- Node.js (v16+)
-- npm or yarn
+- NestJS Setup
+- npm or pnpm
 - A Walmart Developer account
 
 ### Walmart API Setup
@@ -35,6 +36,7 @@ This project is a NestJS-based service that integrates with the Walmart Affiliat
      ```
    - Upload the public key to the Walmart Developer Portal
    - Store the private key securely in your project
+   - Wait for approval, mine took a day.
 
 3. **Obtain Consumer ID**:
    - After approval, Walmart will provide a Consumer ID
@@ -52,8 +54,9 @@ PRIVATE_KEY_PATH=path/to/your/private_key.pem
 ## Project Structure
 
 - **SearchModule**: Handles communication with the Walmart API
-- **ProductModule**: Manages database operations and product data
+- **ProductModule**: Manages database operations and product data, via prisma/supabase connection
 - **PrismaModule**: Provides database access through Prisma ORM
+- **SyncModule**: Simplifies syncing of products from Walmart API to the database
 
 ## Authentication Implementation
 
@@ -72,47 +75,21 @@ The application currently supports:
 - Parsing and typing the API responses
 - Proper error handling with appropriate HTTP status codes
 - Configuration via environment variables
+- Syncing products from Walmart API to the database
+- Saving products to database on successful search
 
 ## Next Steps
 
 - Implement caching for API responses
-- Add pagination support
-- Enhance error logging and monitoring
+- Add better pagination support
+- Enhance error monitoring
 - Implement rate limiting
 - Add comprehensive testing
-- Store results as well as last page limit so we know where to search next
-- Save products to database on successful search
 
 ## Installation
 
 ```bash
 $ npm install
-```
-
-## Running the Application
-
-```bash
-# development
-$ nest start
-
-# watch mode
-$ nest start dev
-
-# production mode
-$ nest start prod
-```
-
-## Testing
-
-```bash
-# unit tests
-$ nest test
-
-# e2e tests
-$ nest test:e2e
-
-# test coverage
-$ nest test:cov
 ```
 
 ## License

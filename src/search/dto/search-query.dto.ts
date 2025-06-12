@@ -28,9 +28,9 @@ export class SearchQueryDto {
 
   @ApiProperty({
     description: 'Item to start at',
-    example: 0,
+    example: 1,
     required: false,
-    default: 0
+    default: 1
   })
   @IsOptional()
   @IsInt()

@@ -18,8 +18,9 @@ async function bootstrap() {
     .setTitle('Walmart API Integration')
     .setDescription('API for searching Walmart products and storing results')
     .setVersion('1.0')
-    .addTag('search', 'Product search operations')
+    .addTag('search', 'WalmartProduct search operations to walmart.io API')
     .addTag('products', 'Product database operations')
+    .addTag('sync', 'Sync operations for automatic syncing of supabase database products table')
     .build();
     
   const document = SwaggerModule.createDocument(app, config);

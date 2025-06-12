@@ -4,15 +4,19 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { ProductService } from 'src/product/product.service';
 import { SearchService } from 'src/search/search.service';
 import { WalmartProduct } from 'src/search/types/walmart-api.types';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SyncService {
+    private myProduct: string;
+
     constructor(
         private readonly productService: ProductService,
         private readonly searchService: SearchService,
-    ) {}
-
-    myProduct: string = "floss";
+        private readonly configService: ConfigService
+    ) {
+        this.myProduct = this.configService.get<string>('SYNC_PRODUCT') ?? 'floss';
+    }
     start: number = 0;
 
     async syncProducts() {
@@ -21,7 +25,7 @@ export class SyncService {
         
         // Get first batch of products
         console.log(`Running product sync at ${new Date().toISOString()}`);
-        const products: WalmartProduct[] = await this.searchService.getWalmartPoducts({ 
+        const products: WalmartProduct[] = await this.searchService.getWalmartProducts({ 
             query: this.myProduct, 
             numItems: 25,
             start: this.start
@@ -48,8 +52,8 @@ export class SyncService {
             console.log(`Fetching page ${i+1} starting from item ${this.start}`);
             
             try {
-                const products: WalmartProduct[] = await this.searchService.getWalmartPoducts({ 
-                    query: this.myProduct, 
+                const products: WalmartProduct[] = await this.searchService.getWalmartProducts({ 
+                    query: this.myProduct,
                     numItems: 25, 
                     start: this.start 
                 });

@@ -5,8 +5,7 @@ import { catchError, firstValueFrom, map } from 'rxjs';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { WalmartApiResponse, WalmartProduct, WalmartSearchOptions, parseWalmartProducts } from './types/walmart-api.types';
-import { Optional } from '@prisma/client/runtime/library';
+import { WalmartApiResponse, WalmartProduct, WalmartSearchOptions } from './types/walmart-api.types';
 
 // Interface for the signature response
 export interface SignatureResponse {
@@ -20,7 +19,7 @@ export class SearchService {
      * https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId={Your
 Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
      */
-    private readonly walmartApiUrl = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
+    private readonly walmartApiUrl: string;
 
     private readonly consumerId: string;
     
@@ -28,6 +27,12 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
         private readonly http: HttpService,
         private readonly configService: ConfigService
     ) {
+        const walmartApiUrl = this.configService.get<string>('WALMART_SEARCH_API_URL');
+        if (!walmartApiUrl) {
+            throw new Error('WALMART_SEARCH_API_URL environment variable is not set');
+        }
+        this.walmartApiUrl = walmartApiUrl;
+        
         const consumerId = this.configService.get<string>('WALMART_CONSUMER_ID');
         
         if (!consumerId) {
@@ -35,7 +40,6 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
         }
         
         this.consumerId = consumerId;
-        console.log('Consumer ID set to:', this.consumerId);
     }
 
     /**
@@ -119,25 +123,25 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
      * @param options Optional search parameters including pagination
      * @returns Array of formatted product strings
      */
-    async getProducts(options: Partial<WalmartSearchOptions>): Promise<string[]> {
+    async getProductsNameAndPrice(options: Partial<WalmartSearchOptions>): Promise<string[]> {
         
         const response = await this.searchWalmart(options);
         
         console.log("Total results: " + response.totalResults);
         const names: string[] = [];
         for (const product of response.items) {
-            names.push(`${product.brandName} - ${product.salePrice}`);
+            names.push(`${product.name} - ${product.salePrice}`);
         }
         return names;
     }
 
     /**
-     * Get just the products array from the Walmart API response
+     * Get full product details from the Walmart API response
      * @param product The product name or keyword to search for
      * @param options Optional search parameters including pagination
-     * @returns Array of formatted product strings
+     * @returns Array of WalmartProduct objects
      */
-    async getWalmartPoducts(options: Partial<WalmartSearchOptions>) {
+    async getWalmartProducts(options: Partial<WalmartSearchOptions>) : Promise<WalmartProduct[]> {
         const response = await this.searchWalmart(options);
         console.log("Total results: " + response.totalResults);
         return response.items;
