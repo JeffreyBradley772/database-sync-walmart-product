@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a NestJS-based service that integrates with the Walmart Affiliate API to search for products and store the results in a database. It provides a robust, type-safe implementation with proper error handling and authentication.
+This project is a NestJS-based service that integrates with the Walmart Affiliate API to search for products and store the results in a database. It was inspired by my desire to develop reusable data source of specific products to avoid rate limits on Walmart's API. Ideally this is a background service that keeps that database up to date. with the latest products within a search criteria. 
 
 ## Features
 
