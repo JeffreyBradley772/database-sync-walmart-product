@@ -6,12 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "${PORT:-8001}:${PORT:-8001}" # Maps host port (from .env or default 8001) to container port
+      - "${PORT:-8001}:${PORT:-8001}"
     env_file:
-      - ./.env # Load environment variables from .env file in the project root
-    # The Dockerfile already copies the 'keys' directory.
-    # If you preferred to mount it as a volume for local development (e.g., to avoid rebuilding the image for key changes),
-    # you could add a volumes section like this:
+      - ./.env
+    # The Dockerfile already copies the 'keys' directory but could be easier to mount as a volume for local development (e.g., to avoid rebuilding the image for key changes)
     # volumes:
     #   - ./keys:/usr/src/app/keys:ro # Mounts local ./keys to /usr/src/app/keys (read-only)
-    container_name: walmart_api_service_container # Optional: A friendly name for the running container
+    container_name: walmart_api_service_container
