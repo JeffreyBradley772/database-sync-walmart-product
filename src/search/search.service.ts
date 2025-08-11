@@ -46,16 +46,16 @@ Impact Radius Publisher Id}&query=tv&categoryId=3944&sort=price&order=ascending
      * Generate a signature for the Walmart API request
      */
     private generateSignature(): SignatureResponse {
-        try {
-            const timestamp = new Date().getTime();
-            const keyVersion = "1";
-            const message = `${this.consumerId}\n${timestamp}\n${keyVersion}\n`;
-            const rsaSigner = crypto.createSign('RSA-SHA256');
-            rsaSigner.update(message);
-            
-            // Read the private key path from environment variables
-            const privateKeyPath = this.configService.get<string>('PRIVATE_KEY_PATH');
-            
+            try {
+                const timestamp = new Date().getTime();
+                const keyVersion = "1";
+                const message = `${this.consumerId}\n${timestamp}\n${keyVersion}\n`;
+                const rsaSigner = crypto.createSign('RSA-SHA256');
+                rsaSigner.update(message);
+                
+                // Read the private key path from environment variables
+                const privateKeyPath = this.configService.get<string>('PRIVATE_KEY_PATH');
+                
             // Check if the path exists
             if (!privateKeyPath) {
                 throw new Error('PRIVATE_KEY_PATH environment variable is not set');

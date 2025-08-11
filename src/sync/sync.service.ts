@@ -26,7 +26,7 @@ export class SyncService {
         // Get first batch of products
         console.log(`Running product sync at ${new Date().toISOString()}`);
         const products: WalmartProduct[] = await this.searchService.getWalmartProducts({ 
-            query: this.myProduct, 
+            query: this.myProduct,
             numItems: 25,
             start: this.start
         });

@@ -42,6 +42,7 @@ export class ProductService {
 
     /**
      * Save multiple Walmart products to the database
+     * TODO: This is dumb, should use group insert method.
      */
     async saveProducts(products: WalmartProduct[]): Promise<FlossProduct[]> {
         const savedProducts: FlossProduct[] = [];
@@ -61,7 +62,8 @@ export class ProductService {
     }
 
     /**
-     * Search for products in the database
+     * Search for products in the database.
+     * TODO: Replace with typesense.
      */
     async searchDatabase(query: string): Promise<FlossProduct[]> {
         const products = await this.prisma.flossProduct.findMany({

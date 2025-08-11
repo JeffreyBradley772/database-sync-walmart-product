@@ -15,7 +15,8 @@ import { SyncModule } from './sync/sync.module';
     }),
     PrismaModule,
     ProductModule, 
-    SearchModule, SyncModule
+    SearchModule, 
+    SyncModule
   ],
   controllers: [AppController],
   providers: [AppService]
