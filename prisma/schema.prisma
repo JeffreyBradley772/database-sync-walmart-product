@@ -46,10 +46,15 @@ model FlossProduct {
   id                  String                @id
   name                String
   brand               String
-  description         String?
-  type                String
+  shortDescription    String?
+  longDescription     String?
   price               Decimal?              @db.Decimal(10, 2)
-  imageUrl            String?
+  msrp                Decimal?              @db.Decimal(10, 2)
+  thumbnailImageUrl   String?
+  mediumImageUrl      String?
+  largeImageUrl       String?
+  walmartRating       Decimal?              @db.Decimal(10, 2)
+  affiliateUrl        String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
   FlossReview         FlossReview[]
