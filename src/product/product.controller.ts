@@ -7,8 +7,7 @@ import {
   Query,
   Body,
   HttpCode,
-  HttpStatus,
-  NotFoundException,
+  HttpStatus
 } from '@nestjs/common';
 import {
   ApiTags,

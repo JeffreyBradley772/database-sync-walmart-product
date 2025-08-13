@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { SyncService } from './sync.service';
 import { ApiTags, ApiQuery } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -8,7 +8,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 export class SyncController {
   constructor(private readonly syncService: SyncService) {}
 
-  @Get()
+  @Post()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Sync products from Walmart',
@@ -24,7 +24,7 @@ export class SyncController {
     return { success: true, message: 'Products sync initiated' };
   }
 
-  @Get('paginated')
+  @Post('paginated')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Sync multiple pages of products',

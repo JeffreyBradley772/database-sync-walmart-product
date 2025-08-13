@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  walmart-api-service:
+  database-sync-walmart-product:
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,4 +13,4 @@ services:
     # The keys directory could be easier to mount as a volume for local development (e.g., to avoid rebuilding the image for key changes)
     # volumes:
     #   - ./keys:/usr/src/app/keys:ro
-    container_name: walmart_api_service_container
+    container_name: database_sync_walmart_product_container
