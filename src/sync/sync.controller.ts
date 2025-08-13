@@ -21,7 +21,7 @@ export class SyncController {
   })
   async syncProducts(): Promise<{ success: boolean; message: string }> {
     await this.syncService.syncProducts();
-    return { success: true, message: 'Products sync initiated' };
+    return { success: true, message: 'Products successfully synced' };
   }
 
   @Post('paginated')
