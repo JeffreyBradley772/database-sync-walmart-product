@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+  output          = "./node_modules/@prisma/client"
   binaryTargets   = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
@@ -8,38 +8,6 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-}
-
-model Account {
-  id                String  @id
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Comment {
-  id          String      @id
-  content     String
-  userId      String
-  reviewId    String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime
-  FlossReview FlossReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([reviewId])
-  @@index([userId])
 }
 
 model FlossProduct {
@@ -57,27 +25,7 @@ model FlossProduct {
   affiliateUrl        String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
-  FlossReview         FlossReview[]
-  ProductPurchaseLink ProductPurchaseLink[]
-}
-
-model FlossReview {
-  id           String       @id
-  title        String
-  productId    String
-  description  String
-  rating       Int          @db.SmallInt
-  pros         String[]
-  cons         String[]
-  userId       String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime
-  Comment      Comment[]
-  FlossProduct FlossProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
-  User         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@index([userId])
+  productPurchaseLink ProductPurchaseLink[]
 }
 
 model ProductPurchaseLink {
@@ -88,30 +36,7 @@ model ProductPurchaseLink {
   price        Decimal?     @db.Decimal(10, 2)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime
-  FlossProduct FlossProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  flossProduct FlossProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
-}
-
-model Session {
-  id           String   @id
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-  id            String        @id
-  name          String?
-  email         String?       @unique
-  emailVerified DateTime?
-  image         String?
-  isVerified    Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime
-  Account       Account[]
-  Comment       Comment[]
-  FlossReview   FlossReview[]
-  Session       Session[]
 }
